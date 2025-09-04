@@ -34,3 +34,5 @@ ls -l /tmp/xfusioncorp.sh
 - Owner: read, write, execute
 - Group: read, execute
 - Others: read, execute
+
+<img width="897" height="419" alt="day4" src="https://github.com/user-attachments/assets/e1c7443d-95bc-43a0-89fa-3d6d8cbac274" />
