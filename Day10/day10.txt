@@ -1,0 +1,167 @@
+thor@jumphost ~$ ssh banner@stapp03
+The authenticity of host 'stapp03 (172.16.238.12)' can't be established.
+ED25519 key fingerprint is SHA256:K7LKH5P6+3436UVAJiJDY6xKxAGc7m+vNuc9R6IPOWE.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stapp03' (ED25519) to the list of known hosts.
+banner@stapp03's password: 
+[banner@stapp03 ~]$ cd /scripts
+[banner@stapp03 scripts]$ vi news_backup.sh
+[banner@stapp03 scripts]$ chmod +x news_backup.sh
+[banner@stapp03 scripts]$ ./news_backup.sh
+./news_backup.sh: line 15: zip: command not found
+The authenticity of host '172.16.238.16 (172.16.238.16)' can't be established.
+ED25519 key fingerprint is SHA256:gVoZ+iLAavp/92oz4opszdNpUdY6P6aQDBdc9eFD85o.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '172.16.238.16' (ED25519) to the list of known hosts.
+clint@172.16.238.16's password: 
+stat local "/backup/xfusioncorp_news.zip": No such file or directory
+[banner@stapp03 scripts]$ sudo yum install -y zip
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for banner: 
+CentOS Stream 9 - BaseOS                                                       34 kB/s | 7.3 kB     00:00    
+CentOS Stream 9 - BaseOS                                                       10 MB/s | 8.8 MB     00:00    
+CentOS Stream 9 - AppStream                                                    30 kB/s | 7.5 kB     00:00    
+CentOS Stream 9 - AppStream                                                    41 MB/s |  25 MB     00:00    
+CentOS Stream 9 - Extras packages                                              27 kB/s | 8.0 kB     00:00    
+Docker CE Stable - x86_64                                                      24 kB/s | 2.0 kB     00:00    
+Docker CE Stable - x86_64                                                     294 kB/s |  54 kB     00:00    
+Extra Packages for Enterprise Linux 9 - x86_64                                133 kB/s |  35 kB     00:00    
+Extra Packages for Enterprise Linux 9 - x86_64                                 23 MB/s |  20 MB     00:00    
+Extra Packages for Enterprise Linux 9 - Next - x86_64                          66 kB/s |  24 kB     00:00    
+Dependencies resolved.
+==============================================================================================================
+ Package                 Architecture             Version                      Repository                Size
+==============================================================================================================
+Installing:
+ zip                     x86_64                   3.0-35.el9                   baseos                   266 k
+Installing dependencies:
+ unzip                   x86_64                   6.0-59.el9                   baseos                   182 k
+
+Transaction Summary
+==============================================================================================================
+Install  2 Packages
+
+Total download size: 447 k
+Installed size: 1.1 M
+Downloading Packages:
+(1/2): unzip-6.0-59.el9.x86_64.rpm                                            847 kB/s | 182 kB     00:00    
+(2/2): zip-3.0-35.el9.x86_64.rpm                                              1.1 MB/s | 266 kB     00:00    
+--------------------------------------------------------------------------------------------------------------
+Total                                                                         1.1 MB/s | 447 kB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                      1/1 
+  Installing       : unzip-6.0-59.el9.x86_64                                                              1/2 
+  Installing       : zip-3.0-35.el9.x86_64                                                                2/2 
+  Running scriptlet: zip-3.0-35.el9.x86_64                                                                2/2 
+  Verifying        : unzip-6.0-59.el9.x86_64                                                              1/2 
+  Verifying        : zip-3.0-35.el9.x86_64                                                                2/2 
+
+Installed:
+  unzip-6.0-59.el9.x86_64                                zip-3.0-35.el9.x86_64                               
+
+Complete!
+[banner@stapp03 scripts]$ ./news_backup.sh
+  adding: var/www/html/news/ (stored 0%)
+  adding: var/www/html/news/.gitkeep (stored 0%)
+  adding: var/www/html/news/index.html (stored 0%)
+clint@172.16.238.16's password: 
+xfusioncorp_news.zip                                                        100%  588     2.4MB/s   00:00    
+[banner@stapp03 scripts]$ ls -lh /backup/
+total 4.0K
+-rw-r--r-- 1 banner banner 588 Sep  7 15:22 xfusioncorp_news.zip
+[banner@stapp03 scripts]$ ssh clint@stbkp01
+The authenticity of host 'stbkp01 (172.16.238.16)' can't be established.
+ED25519 key fingerprint is SHA256:gVoZ+iLAavp/92oz4opszdNpUdY6P6aQDBdc9eFD85o.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:1: 172.16.238.16
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stbkp01' (ED25519) to the list of known hosts.
+clint@stbkp01's password: 
+[clint@stbkp01 ~]$ cd /backup
+[clint@stbkp01 backup]$ ls -lh
+total 4.0K
+-rw-r--r-- 1 clint clint 588 Sep  7 15:22 xfusioncorp_news.zip
+[clint@stbkp01 backup]$ exit
+logout
+Connection to stbkp01 closed.
+[banner@stapp03 scripts]$ exit
+logout
+Connection to stapp03 closed.
+thor@jumphost ~$ banner@stapp03
+bash: banner@stapp03: command not found
+thor@jumphost ~$ ssh banner@stapp03
+banner@stapp03's password: 
+Last login: Sun Sep  7 15:08:53 2025 from 172.16.238.3
+[banner@stapp03 ~]$ ssh-keygen -t rsa -b 2048
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/banner/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/banner/.ssh/id_rsa
+Your public key has been saved in /home/banner/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:dFebUiSA+Qo0PH2iQWKup6T2NG0M5QS/Huv7xzOrhzc banner@stapp03.stratos.xfusioncorp.com
+The key's randomart image is:
++---[RSA 2048]----+
+|   .oo.. o....+  |
+|   oo.* = .  + o |
+|    .= =.+. o o  |
+|   .+ +. ... .   |
+|  o..+ .S.       |
+| o o= o .        |
+|...o *  o        |
+|. o +  . E       |
+|   . ooo=.=      |
++----[SHA256]-----+
+[banner@stapp03 ~]$ ssh-copy-id clint@172.16.238.16
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/banner/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+clint@172.16.238.16's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'clint@172.16.238.16'"
+and check to make sure that only the key(s) you wanted were added.
+
+[banner@stapp03 ~]$ ssh clint@172.16.238.16
+Last login: Sun Sep  7 15:25:50 2025 from 172.16.238.12
+[clint@stbkp01 ~]$ 
+
+
+---------------------------------------------------------------------------------------------------------------------------
+#SCRIPT
+
+#!/bin/bash
+
+# Variables
+BACKUP_NAME="xfusioncorp_news.zip"
+SRC_DIR="/var/www/html/news"
+LOCAL_BACKUP_DIR="/backup"
+REMOTE_USER="clint"
+REMOTE_HOST="172.16.238.16"   # Nautilus Backup Server (replace with actual host/IP if different)
+REMOTE_BACKUP_DIR="/backup"
+
+# Create backup directory if not exists
+mkdir -p $LOCAL_BACKUP_DIR
+
+# Create zip archive
+zip -r ${LOCAL_BACKUP_DIR}/${BACKUP_NAME} $SRC_DIR
+
+# Copy archive to Nautilus Backup Server
+scp ${LOCAL_BACKUP_DIR}/${BACKUP_NAME} ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BACKUP_DIR}/
+
+
