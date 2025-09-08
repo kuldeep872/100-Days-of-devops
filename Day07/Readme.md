@@ -34,7 +34,7 @@ grep devuser7 /etc/passwd
 - /etc/shells → lists all valid shells.
 - grep username /etc/passwd → confirms shell assigned
 
-- ## ✅ Outcomes
+  ## ✅ Outcomes
 - User devuser7 is created successfully.
 - /etc/passwd entry shows the assigned shell.
 - User behavior depends on the shell:
