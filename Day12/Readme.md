@@ -107,5 +107,29 @@ curl http://stapp01:8083
 ```
 and correct the misconfigured line.
 
+## 📊 Architecture Diagram
+```
+              +------------------+
+              |   Jumphost       |
+              | (curl client)    |
+              +------------------+
+                        |
+                        |  HTTP request (port 8083)
+                        v
+              +--------------------------+
+              | stapp01                  |
+              | Apache HTTPD             |
+              | Listening on port :8083  |
+              +--------------------------+
+                        |
+                        |  Serves test page / content
+                        v
+              +--------------------------+
+              |   Web Browser / User     |
+              +--------------------------+
+```
+
+
+
 <img width="918" height="419" alt="day12" src="https://github.com/user-attachments/assets/3e756543-3100-43b0-8b47-e339b5ea20f6" />
 
