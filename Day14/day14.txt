@@ -1,0 +1,185 @@
+thor@jumphost ~$ ssh tony@stapp01
+The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
+ED25519 key fingerprint is SHA256:yHfHGhqXCBD4DoZFPnUf9hRwq0W6xDOIQFAWdsrsnEI.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stapp01' (ED25519) to the list of known hosts.
+tony@stapp01's password: 
+[tony@stapp01 ~]$ sudo systemctl status httpd
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for tony: 
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)
+   Active: failed (Result: exit-code) since Fri 2025-09-12 15:55:46 UTC; 3min 3s ago
+     Docs: man:httpd(8)
+           man:apachectl(8)
+  Process: 695 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=1/FAILURE)
+  Process: 694 ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND (code=exited, status=1/FAILURE)
+ Main PID: 694 (code=exited, status=1/FAILURE)
+
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com httpd[694]: AH00558: httpd: Could not reliably determine the server's f...sage
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com httpd[694]: (98)Address already in use: AH00072: make_sock: could not b...8084
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com httpd[694]: no listening sockets available, shutting down
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com httpd[694]: AH00015: Unable to open logs
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: main process exited, code=exited, status=1/FAILURE
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com kill[695]: kill: cannot find process ""
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: control process exited, code=exited status=1
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com systemd[1]: Failed to start The Apache HTTP Server.
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com systemd[1]: Unit httpd.service entered failed state.
+Sep 12 15:55:46 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service failed.
+Hint: Some lines were ellipsized, use -l to show in full.
+[tony@stapp01 ~]$ sudo systemctl start httpd
+Job for httpd.service failed because the control process exited with error code. See "systemctl status httpd.service" and "journalctl -xe" for details.
+[tony@stapp01 ~]$ sudo ss -tulnp | grep 8084
+tcp    LISTEN     0      10     127.0.0.1:8084                  *:*                   users:(("sendmail",pid=669,fd=4))
+[tony@stapp01 ~]$ sudo systemctl stop sendmail
+[tony@stapp01 ~]$ sudo systemctl disable sendmail
+Removed symlink /etc/systemd/system/multi-user.target.wants/sm-client.service.
+Removed symlink /etc/systemd/system/multi-user.target.wants/sendmail.service.
+[tony@stapp01 ~]$ sudo ss -tulnp | grep 8084
+[tony@stapp01 ~]$ sudo systemctl start httpd
+[tony@stapp01 ~]$ sudo systemctl enable httpd
+Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.
+[tony@stapp01 ~]$ sudo ss -tulnp | grep httpd
+tcp    LISTEN     0      511       *:8084                  *:*                   users:(("httpd",pid=998,fd=3),("httpd",pid=997,fd=3),("httpd",pid=996,fd=3),("httpd",pid=995,fd=3),("httpd",pid=994,fd=3),("httpd",pid=993,fd=3))
+[tony@stapp01 ~]$ ssh steve@stapp02
+-bash: ssh: command not found
+[tony@stapp01 ~]$ ssh steve@stapp02
+-bash: ssh: command not found
+[tony@stapp01 ~]$ exit
+logout
+Connection to stapp01 closed.
+thor@jumphost ~$ ssh steve@stapp02
+The authenticity of host 'stapp02 (172.16.238.11)' can't be established.
+ED25519 key fingerprint is SHA256:4XUjVYZEbHhwzBWKuXZ2fX5XHnMyXCul2N0tVdoW4aA.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stapp02' (ED25519) to the list of known hosts.
+steve@stapp02's password: 
+[steve@stapp02 ~]$ sudo systemctl status httpd
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for steve: 
+● httpd.service - The Apache HTTP Server
+     Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; preset: disabled)
+     Active: active (running) since Fri 2025-09-12 15:55:47 UTC; 10min ago
+       Docs: man:httpd.service(8)
+   Main PID: 1678 (httpd)
+     Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B/sec"
+      Tasks: 177 (limit: 411434)
+     Memory: 19.7M
+     CGroup: /docker/f6ae82f03ff20c0903b0c465991e3c266d6bc52670eaa99b4c6724c354eeb796/system.slice/httpd.service
+             ├─1678 /usr/sbin/httpd -DFOREGROUND
+             ├─1685 /usr/sbin/httpd -DFOREGROUND
+             ├─1686 /usr/sbin/httpd -DFOREGROUND
+             ├─1687 /usr/sbin/httpd -DFOREGROUND
+             └─1688 /usr/sbin/httpd -DFOREGROUND
+
+Sep 12 16:04:46 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:04:56 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:06 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:16 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:26 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:36 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:46 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:56 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:06:06 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:06:16 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+...skipping...
+● httpd.service - The Apache HTTP Server
+     Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; preset: disabled)
+     Active: active (running) since Fri 2025-09-12 15:55:47 UTC; 10min ago
+       Docs: man:httpd.service(8)
+   Main PID: 1678 (httpd)
+     Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B/sec"
+      Tasks: 177 (limit: 411434)
+     Memory: 19.7M
+     CGroup: /docker/f6ae82f03ff20c0903b0c465991e3c266d6bc52670eaa99b4c6724c354eeb796/system.slice/httpd.service
+             ├─1678 /usr/sbin/httpd -DFOREGROUND
+             ├─1685 /usr/sbin/httpd -DFOREGROUND
+             ├─1686 /usr/sbin/httpd -DFOREGROUND
+             ├─1687 /usr/sbin/httpd -DFOREGROUND
+             └─1688 /usr/sbin/httpd -DFOREGROUND
+
+Sep 12 16:04:46 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:04:56 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:06 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:16 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:26 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:36 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:46 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:05:56 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:06:06 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+Sep 12 16:06:16 stapp02.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1678 (READY=1, S>
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+[steve@stapp02 ~]$ sudo ss -tulnp | grep 8084
+tcp   LISTEN 0      511          0.0.0.0:8084       0.0.0.0:*    users:(("httpd",pid=1688,fd=3),("httpd",pid=1687,fd=3),("httpd",pid=1686,fd=3),("httpd",pid=1678,fd=3))
+[steve@stapp02 ~]$ ssh banner@stapp03
+The authenticity of host 'stapp03 (172.16.238.12)' can't be established.
+ED25519 key fingerprint is SHA256:xH+BSOTPxMmHBtU664FKwlFai4nH5+LAVihf3RAI6kM.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stapp03' (ED25519) to the list of known hosts.
+banner@stapp03's password: 
+[banner@stapp03 ~]$ sudo systemctl status httpd
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for banner: 
+● httpd.service - The Apache HTTP Server
+     Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; preset: disabled)
+     Active: active (running) since Fri 2025-09-12 15:55:47 UTC; 12min ago
+       Docs: man:httpd.service(8)
+   Main PID: 1668 (httpd)
+     Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B/sec"
+      Tasks: 177 (limit: 411434)
+     Memory: 19.4M
+     CGroup: /docker/2879e0cb303d440b0df2f73c13958f09f24f16210f2e1fb177404c7d47e7cbdf/system.slice/httpd.service
+             ├─1668 /usr/sbin/httpd -DFOREGROUND
+             ├─1675 /usr/sbin/httpd -DFOREGROUND
+             ├─1676 /usr/sbin/httpd -DFOREGROUND
+             ├─1677 /usr/sbin/httpd -DFOREGROUND
+             └─1678 /usr/sbin/httpd -DFOREGROUND
+
+Sep 12 16:06:27 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:06:37 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:06:47 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:06:57 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:07 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:17 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:27 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:37 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:47 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+Sep 12 16:07:57 stapp03.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 1668 (READY=1, S>
+[banner@stapp03 ~]$ 
+[banner@stapp03 ~]$ sudo ss -tulnp | grep 8084
+tcp   LISTEN 0      511          0.0.0.0:8084       0.0.0.0:*    users:(("httpd",pid=1678,fd=3),("httpd",pid=1677,fd=3),("httpd",pid=1676,fd=3),("httpd",pid=1668,fd=3))
+[banner@stapp03 ~]$ 
