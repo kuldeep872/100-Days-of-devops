@@ -1,0 +1,160 @@
+thor@jumphost ~$ ssh loki@stlb01
+The authenticity of host 'stlb01 (172.16.238.14)' can't be established.
+ED25519 key fingerprint is SHA256:YLBPS1+Y2HeLR1HXemTL2eQcHX/NUln/4Q275RtgiGk.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stlb01' (ED25519) to the list of known hosts.
+loki@stlb01's password: 
+[loki@stlb01 ~]$ sudo yum install -y nginx
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for loki: 
+CentOS Stream 9 - BaseOS                                           28 kB/s | 7.3 kB     00:00    
+CentOS Stream 9 - BaseOS                                          8.0 MB/s | 8.8 MB     00:01    
+CentOS Stream 9 - AppStream                                        30 kB/s | 7.5 kB     00:00    
+CentOS Stream 9 - AppStream                                        20 MB/s |  25 MB     00:01    
+CentOS Stream 9 - Extras packages                                  35 kB/s | 8.0 kB     00:00    
+CentOS Stream 9 - Extras packages                                  21 kB/s |  19 kB     00:00    
+Extra Packages for Enterprise Linux 9 - x86_64                    125 kB/s |  34 kB     00:00    
+Extra Packages for Enterprise Linux 9 - x86_64                     28 MB/s |  20 MB     00:00    
+Extra Packages for Enterprise Linux 9 openh264 (From Cisco) - x86 4.5 kB/s | 993  B     00:00    
+Extra Packages for Enterprise Linux 9 - Next - x86_64             101 kB/s |  24 kB     00:00    
+Dependencies resolved.
+==================================================================================================
+ Package                     Architecture    Version                     Repository          Size
+==================================================================================================
+Installing:
+ nginx                       x86_64          2:1.20.1-24.el9             appstream           36 k
+Installing dependencies:
+ centos-logos-httpd          noarch          90.8-3.el9                  appstream          1.5 M
+ nginx-core                  x86_64          2:1.20.1-24.el9             appstream          570 k
+ nginx-filesystem            noarch          2:1.20.1-24.el9             appstream          9.3 k
+Installing weak dependencies:
+ logrotate                   x86_64          3.18.0-12.el9               baseos              74 k
+
+Transaction Summary
+==================================================================================================
+Install  5 Packages
+
+Total download size: 2.2 M
+Installed size: 4.5 M
+Downloading Packages:
+(1/5): logrotate-3.18.0-12.el9.x86_64.rpm                         596 kB/s |  74 kB     00:00    
+(2/5): nginx-1.20.1-24.el9.x86_64.rpm                             109 kB/s |  36 kB     00:00    
+(3/5): centos-logos-httpd-90.8-3.el9.noarch.rpm                   2.7 MB/s | 1.5 MB     00:00    
+(4/5): nginx-filesystem-1.20.1-24.el9.noarch.rpm                   37 kB/s | 9.3 kB     00:00    
+(5/5): nginx-core-1.20.1-24.el9.x86_64.rpm                        1.2 MB/s | 570 kB     00:00    
+--------------------------------------------------------------------------------------------------
+Total                                                             2.3 MB/s | 2.2 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                          1/1 
+  Running scriptlet: nginx-filesystem-2:1.20.1-24.el9.noarch                                  1/5 
+  Installing       : nginx-filesystem-2:1.20.1-24.el9.noarch                                  1/5 
+  Installing       : nginx-core-2:1.20.1-24.el9.x86_64                                        2/5 
+  Installing       : centos-logos-httpd-90.8-3.el9.noarch                                     3/5 
+  Running scriptlet: logrotate-3.18.0-12.el9.x86_64                                           4/5 
+  Installing       : logrotate-3.18.0-12.el9.x86_64                                           4/5 
+  Running scriptlet: logrotate-3.18.0-12.el9.x86_64                                           4/5 
+Created symlink /etc/systemd/system/timers.target.wants/logrotate.timer → /usr/lib/systemd/system/logrotate.timer.
+
+  Installing       : nginx-2:1.20.1-24.el9.x86_64                                             5/5 
+  Running scriptlet: nginx-2:1.20.1-24.el9.x86_64                                             5/5 
+  Verifying        : logrotate-3.18.0-12.el9.x86_64                                           1/5 
+  Verifying        : centos-logos-httpd-90.8-3.el9.noarch                                     2/5 
+  Verifying        : nginx-2:1.20.1-24.el9.x86_64                                             3/5 
+  Verifying        : nginx-core-2:1.20.1-24.el9.x86_64                                        4/5 
+  Verifying        : nginx-filesystem-2:1.20.1-24.el9.noarch                                  5/5 
+
+Installed:
+  centos-logos-httpd-90.8-3.el9.noarch               logrotate-3.18.0-12.el9.x86_64              
+  nginx-2:1.20.1-24.el9.x86_64                       nginx-core-2:1.20.1-24.el9.x86_64           
+  nginx-filesystem-2:1.20.1-24.el9.noarch           
+
+Complete!
+[loki@stlb01 ~]$ sudo vi /etc/nginx/nginx.conf
+[loki@stlb01 ~]$ sudo nginx -t
+[sudo] password for loki: 
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+[loki@stlb01 ~]$ sudo systemctl restart nginx
+[loki@stlb01 ~]$ sudo systemctl enable nginx
+Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service → /usr/lib/systemd/system/nginx.service.
+[loki@stlb01 ~]$ curl http://stlb01
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.20.1</center>
+</body>
+</html>
+[loki@stlb01 ~]$ ssh tony@stapp01
+The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
+ED25519 key fingerprint is SHA256:SrTxlMdwUGhi7pFJqWzweYAMumLhypHN1MtluIPjM+k.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stapp01' (ED25519) to the list of known hosts.
+tony@stapp01's password: 
+[tony@stapp01 ~]$ sudo systemctl status httpd
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for tony: 
+● httpd.service - The Apache HTTP Server
+     Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; preset: disabled)
+     Active: active (running) since Sun 2025-09-14 17:00:03 UTC; 25min ago
+       Docs: man:httpd.service(8)
+   Main PID: 1688 (httpd)
+     Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B>
+      Tasks: 177 (limit: 411434)
+     Memory: 18.9M
+     CGroup: /docker/637c4c777c8fc83ef4b87f26fa73679f4921910b8a58b1016cc2a73b524e46ff/system.slic>
+             ├─1688 /usr/sbin/httpd -DFOREGROUND
+             ├─1695 /usr/sbin/httpd -DFOREGROUND
+             ├─1696 /usr/sbin/httpd -DFOREGROUND
+             ├─1697 /usr/sbin/httpd -DFOREGROUND
+             └─1698 /usr/sbin/httpd -DFOREGROUND
+
+Sep 14 17:23:33 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:23:43 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:23:53 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:03 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:13 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:23 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:33 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:43 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:24:53 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+Sep 14 17:25:03 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification messa>
+[tony@stapp01 ~]$ 
+[tony@stapp01 ~]$ sudo ss -tulnp | grep httpd
+tcp   LISTEN 0      511          0.0.0.0:8089       0.0.0.0:*    users:(("httpd",pid=1698,fd=3),("httpd",pid=1697,fd=3),("httpd",pid=1696,fd=3),("httpd",pid=1688,fd=3))
+[tony@stapp01 ~]$ ssh loki@stlb01
+The authenticity of host 'stlb01 (172.16.238.14)' can't be established.
+ED25519 key fingerprint is SHA256:YLBPS1+Y2HeLR1HXemTL2eQcHX/NUln/4Q275RtgiGk.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stlb01' (ED25519) to the list of known hosts.
+loki@stlb01's password: 
+Last login: Sun Sep 14 17:03:47 2025 from 172.16.238.3
+[loki@stlb01 ~]$ sudo vi /etc/nginx/nginx.conf
+[sudo] password for loki: 
+[loki@stlb01 ~]$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+[loki@stlb01 ~]$ sudo systemctl restart nginx
+[loki@stlb01 ~]$ curl http://172.16.238.14
+Welcome to xFusionCorp Industries![loki@stlb01 ~]$ 
