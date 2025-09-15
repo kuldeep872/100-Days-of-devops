@@ -1,0 +1,43 @@
+thor@jumphost ~$ ssh peter@stdb01
+The authenticity of host 'stdb01 (172.16.239.10)' can't be established.
+ED25519 key fingerprint is SHA256:tPx+Rn273T94CSd3UqSM6hL4/8ewc82+2kbtIv59dtE.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'stdb01' (ED25519) to the list of known hosts.
+peter@stdb01's password: 
+[peter@stdb01 ~]$ sudo su - postgres
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for peter: 
+[postgres@stdb01 ~]$ psql
+psql (13.14)
+Type "help" for help.
+
+postgres=# CREATE USER kodekloud_joy WITH PASSWORD 'YchZHRcLkL';
+CREATE ROLE
+postgres=# CREATE DATABASE kodekloud_db9;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILAGES ON DATABASE kodekloud_db9 TO kodekloud_joy;
+ERROR:  syntax error at or near "PRIVILAGES"
+LINE 1: GRANT ALL PRIVILAGES ON DATABASE kodekloud_db9 TO kodekloud_...
+                  ^
+postgres=# GRANT ALL PRIVILEGES  ON DATABASE kodekloud_db9 TO kodekloud_joy;
+GRANT
+postgres=# \q
+[postgres@stdb01 ~]$ exit
+logout
+[peter@stdb01 ~]$ psql -U kodekloud_joy -d kodekloud_db9 -h localhost
+Password for user kodekloud_joy: 
+psql: error: FATAL:  password authentication failed for user "kodekloud_joy"
+[peter@stdb01 ~]$ psql -U kodekloud_joy -d kodekloud_db9 -h localhost
+Password for user kodekloud_joy: 
+psql (13.14)
+Type "help" for help.
+
+kodekloud_db9=> 
